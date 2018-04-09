@@ -30,9 +30,10 @@
 <script src="hammer.js"></script>
 <script>
     var reqAnimationFrame = (function () {
-        return window[Hammer.prefixed(window, 'requestAnimationFrame')] || function (callback) {
-            window.setTimeout(callback, 1000 / 60);
-        };
+      // https://developer.mozilla.org/zh-CN/docs/Web/API/Window/requestAnimationFrame
+      return window[Hammer.prefixed(window, 'requestAnimationFrame')] || function (callback) {
+          window.setTimeout(callback, 1000 / 60);
+      };
     })();
     var el = document.querySelector("#hit");
     var START_X = Math.round((window.innerWidth - el.offsetWidth) / 2);
