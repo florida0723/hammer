@@ -8,57 +8,77 @@ var reqAnimationFrame = (function () {
 
 (function(){
   var defaults = {
-    'transform': {
-      'translate': {    // 定义 2D 转换。
-        'x': 0,
-        'y': 0
-      },
-      'scale': {    // 定义 2D 缩放转换。
-        'x': 1,
-        'y': 1
-      },
-      'angle': 0    // 定义 2D 旋转，在参数中规定角度。deg
-    },
-    ticking: false
+    'translate': {    // 定义 2D 转换。
+		'x': 0,
+		'y': 0
+	},
+	'scale': 1,    // 定义 2D 缩放转换。
+	'angle': 0,    // 定义 2D 旋转，在参数 中规定角度。deg
+    'ticking': false
   }
   
   function touch(id, options){
     
-    this.options = options || {};
-    
-    this.opts = Hammer.extend(defaults, this.options, true);
-    
-    this.x = this.opts.transform.translate.x;
-    this.y = this.opts.transform.translate.y;
-    
+    options = options || {};
+	  
     this.el = document.querySelector(id);
     
+    this.opts = Hammer.extend(defaults, options);
+	
+	this.old = Hammer.extend({}, this.opts);	// 缓存原始数据
+	
     this.init();
-    
-    this.elementUpdate();
   }
   
   touch.prototype.init = function(){
     var _this = this;
     
-    var mc = new Hammer(this.el);
-    mc.get('pinch').set({ enable: true });
-    mc.get('rotate').set({ enable: true });
+    var handler = new Hammer(this.el);
+    handler.get('pinch').set({ enable: true });
+    handler.get('rotate').set({ enable: true });
     
-    mc.on("panstart panmove", function(ev){
-      _this.el.className = '';
-      _this.opts.transform.translate.x += parseInt(ev.deltaX);
-      _this.opts.transform.translate.y += parseInt(ev.deltaY);
+    this.elementUpdate();
+    
+	handler.on("panstart panmove", function(ev){
+		console.log(_this.opts.translate);
+      _this.opts.translate.x += parseInt(ev.deltaX);
+      _this.opts.translate.y += parseInt(ev.deltaY);
       
-      _this.opts.transform.translate = {
-        x: _this.x + ev.deltaX,
-        y: _this.y + ev.deltaY
+      _this.opts.translate = {
+        x: parseInt(_this.old.translate.x + ev.deltaX),
+        y: parseInt(_this.old.translate.y + ev.deltaY)
       };
       _this.elementUpdate();
     });
     
-    //mc.on("rotatestart rotatemove", onRotate);
-    //mc.on("pinchstart pinchmove", onPinch);
+	this.initAngle = 0;
+    handler.on("rotatestart rotatemove", function(ev){
+	  if(ev.type == 'rotatestart') {
+        _this.initAngle = _this.opts.angle || 0;
+      }
+      _this.opts.angle = _this.initAngle + parseFloat(ev.rotation);
+      _this.elementUpdate();
+	});
+    
+	this.initScale = 1;
+	handler.on("pinchstart pinchmove", function(ev){
+	  if(ev.type == 'pinchstart') {
+        _thisinitScale = _this.opts.scale || 1;
+      }
+
+      _this.opts.scale = _this.initScale * parseFloat(ev.scale);
+
+      _this.elementUpdate();
+	});
+	
+	handler.on("hammer.input", function(ev) {
+      if(ev.isFinal) {
+        _this.old.translate.x = _this.opts.translate.x;
+        _this.old.translate.y = _this.opts.translate.y;
+        
+        _this.updateElementTransform();
+      }
+    });  
   };
   
   touch.prototype.elementUpdate = function(){
@@ -71,11 +91,11 @@ var reqAnimationFrame = (function () {
   
   touch.prototype.updateElementTransform = function(){
     var _this = this;
-    console.log(_this);
+	
     var value = [
-      'translate(' + this.opts.transform.translate.x + 'px, ' + this.opts.transform.translate.y + 'px)',
-      'scale(' + this.opts.transform.scale.x + ', ' + this.opts.transform.scale.y + ')',
-      'rotate('+ this.opts.transform.angle + 'deg)'
+      'translate(' + this.opts.translate.x + 'px, ' + this.opts.translate.y + 'px)',
+      'scale(' + this.opts.scale + ', ' + this.opts.scale + ')',
+      'rotate('+ this.opts.angle + 'deg)'
     ];
 
     value = value.join(" ");
