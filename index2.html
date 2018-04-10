@@ -22,123 +22,26 @@
         }
         #hit, #hit2, #hit3 {
           padding: 10px;
+          position: absolute;
         }
     </style>
 </head>
 <body>
-  <div id="hit" style="background: #42d692; width: 150px; height: 150px;"></div>  
-  
+  <div id="hit" style="background: #42d692; width: 150px; height: 150px;"></div>
+
   <div id="hit2" style="background: #42d692; width: 150px; height: 150px;"></div>
-  
-  
+
+  <div id="hit3" style="background: #42d692; width: 150px; height: 150px;"></div>
 <script src="hammer.js"></script>
-
 <script src="index.js"></script>
-
 <script>
-  new touch('#hit', {});
-  new touch('#hit2', {});
-</script>
-<script>
-    /*var reqAnimationFrame = (function () {
-      // https://developer.mozilla.org/zh-CN/docs/Web/API/Window/requestAnimationFrame
-      return window[Hammer.prefixed(window, 'requestAnimationFrame')] || function (callback) {
-          window.setTimeout(callback, 1000 / 60);
-      };
-    })();
-    var el = document.querySelector("#hit");
-    console.log(el.style.transform);
-    var START_X = Math.round((window.innerWidth - el.offsetWidth) / 2);
-    var START_Y = Math.round((window.innerHeight - el.offsetHeight) / 2);
-    var ticking = false;
-    var transform;
-    // 这里我们直接使用new Hammer()来创建了一个实例，这个实例中就自动帮我们创建了tap、doubletap、pan、swap、press事件，所以我们可以直接通过on来监听这些事件，但是他并没有创建 pinch 事件和 rotate 事件，因为创建这两个事件会将该元素修改为块级元素，当然，我们可以通过设置还使得其支持pinch和rotate事件。
-    var mc = new Hammer(el);
-    mc.get('pinch').set({ enable: true });
-    mc.get('rotate').set({ enable: true });
-
-    mc.on("panstart panmove", onPan);
-    mc.on("rotatestart rotatemove", onRotate);
-    mc.on("pinchstart pinchmove", onPinch);
-    
-    mc.on("hammer.input", function(ev) {
-      if(ev.isFinal) {
-        START_X = transform.translate.x;
-        START_Y = transform.translate.y;
-                updateElementTransform();
-      }
-    });
-    function resetElement() {
-        el.className = 'animate';
-        transform = {
-            translate: { x: START_X, y: START_Y },
-            scale: 1,
-            angle: 0,
-            rx: 0,
-            ry: 0,
-            rz: 0
-        };
-        requestElementUpdate();
-    }
+    var arr = ['#hit', '#hit2', '#hit3'];
 
-    function updateElementTransform() {
-        var value = [
-            'translate(' + transform.translate.x + 'px, ' + transform.translate.y + 'px)',
-            'scale(' + transform.scale + ', ' + transform.scale + ')',
-            'rotate('+ transform.angle + 'deg)'
-        ];
-        value = value.join(" ");
-        
-        el.textContent = value;
-        el.style.webkitTransform = value;
-        el.style.mozTransform = value;
-        el.style.transform = value;
-        ticking = false;
-    }
-    function requestElementUpdate() {
-      if(!ticking) {
-        reqAnimationFrame(updateElementTransform);
-        ticking = true;
-      }
+    for(var i=0, l=arr.length; i<l; i++){
+        new touch(arr[i], {});
     }
-    
-    function onPan(ev) {
-      el.className = '';      transform.translate.x += ev.deltaX;      transform.translate.y += ev.deltaY;
-      
-      transform.translate = {
-        x: START_X + ev.deltaX,
-        y: START_Y + ev.deltaY
-      };
-      requestElementUpdate();
-    }
-    var initScale = 1;
-    function onPinch(ev) {
-      if(ev.type == 'pinchstart') {
-        initScale = transform.scale || 1;
-      }
-      el.className = '';
-      transform.scale = initScale * ev.scale;
-      requestElementUpdate();
-    }
-    var initAngle = 0;
-    function onRotate(ev) {
-      if(ev.type == 'rotatestart') {
-         initAngle = transform.angle || 0;
-      }
-      el.className = '';
-      transform.rz = 1;
-      transform.angle = initAngle + ev.rotation;
-      requestElementUpdate();
-    }
-    function onSwipe(ev) {
-      var angle = 50;
-      
-      transform.ry = (ev.direction & Hammer.DIRECTION_HORIZONTAL) ? 1 : 0;
-      transform.rx = (ev.direction & Hammer.DIRECTION_VERTICAL) ? 1 : 0;
-      transform.angle = (ev.direction & (Hammer.DIRECTION_RIGHT | Hammer.DIRECTION_UP)) ? angle : -angle;
-      requestElementUpdate();
-    }
-    resetElement();*/
+    // new touch('#hit2', {translateY: 20});
+    // new touch('#hit3', {translateX: 20, translateY: 20});
 </script>
 </body>
 </html>
